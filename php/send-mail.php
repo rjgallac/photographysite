@@ -11,11 +11,11 @@ try {
         exit;
     }
 
-    // reCAPTCHA verification - use environment variable for secret key
+    // reCAPTCHA verification - read from environment variable
     $secret = getenv('RECAPTCHA_SECRET_KEY');
     
     if (empty($secret)) {
-        error_log("RECAPTCHA_SECRET_KEY not set in environment");
+        error_log("RECAPTCHA_SECRET_KEY not configured");
         echo json_encode(['success' => false, 'error' => 'Server configuration error. Please try again later.']);
         exit;
     }

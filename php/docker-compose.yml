@@ -4,6 +4,8 @@ services:
   php-fpm:
     build: .
     container_name: photography-php
+    env_file:
+      - .env
     volumes:
       - ..:/var/www/html
       - logs:/var/www/html/logs

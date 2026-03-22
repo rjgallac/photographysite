@@ -22,18 +22,16 @@ Open http://localhost or your Raspberry Pi's IP address in a browser.
 ### 3. Set up reCAPTCHA v3
 
 1. Go to https://www.google.com/recaptcha/admin and create a new reCAPTCHA v3 key for your domain (e.g., `photography.ddns.net`)
-2. Copy `.env.example` to `.env` on your server:
+2. Copy `.env.example` to `.env` in the **php** directory on your server:
    ```bash
+   cd /home/rob/anotherhtml/php
    cp .env.example .env
+   nano .env  # Add your actual keys here
    ```
-3. Edit `.env` with your actual keys:
-   ```bash
-   nano .env
-   ```
-4. Update `contact.html` with your Site Key:
-   - Replace `YOUR_SITE_KEY` in the script src tag
-   - Replace `YOUR_SITE_KEY` in the JavaScript constant
-5. Set permissions on `.env`:
+3. Update `contact.html` with your Site Key:
+   - Replace `YOUR_SITE_KEY` in the script src tag at top of page
+   - Replace `YOUR_SITE_KEY` in the JavaScript constant (around line 124)
+4. Set permissions on `.env`:
    ```bash
    chmod 600 .env
    ```
