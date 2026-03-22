@@ -11,6 +11,33 @@ try {
         exit;
     }
 
+    // reCAPTCHA verification
+    $secret = 'YOUR_SECRET_KEY';
+    $recaptchaResponse = isset($_POST['recaptcha-response']) ? $_POST['recaptcha-response'] : '';
+    
+    if (empty($recaptchaResponse)) {
+        echo json_encode(['success' => false, 'error' => 'Security verification failed. Please try again.']);
+        exit;
+    }
+
+    $verifyUrl = "https://www.google.com/recaptcha/api/siteverify?secret=$secret&response=" . urlencode($recaptchaResponse);
+    $response = file_get_contents($verifyUrl);
+    $responseJson = json_decode($response, true);
+
+    if (!$responseJson['success']) {
+        error_log("reCAPTCHA verification failed: " . print_r($responseJson, true));
+        echo json_encode(['success' => false, 'error' => 'Security verification failed. Please try again.']);
+        exit;
+    }
+
+    // Check score (0-1 scale, recommend 0.5 or higher for form submissions)
+    $score = isset($responseJson['score']) ? floatval($responseJson['score']) : 0;
+    if ($score < 0.5) {
+        error_log("reCAPTCHA score too low: " . $score);
+        echo json_encode(['success' => false, 'error' => 'Security verification failed. Please try again.']);
+        exit;
+    }
+
     $name = isset($_POST['name']) ? trim($_POST['name']) : '';
     $email = isset($_POST['email']) ? trim($_POST['email']) : '';
     $phone = isset($_POST['phone']) ? trim($_POST['phone']) : '';

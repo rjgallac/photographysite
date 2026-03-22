@@ -19,10 +19,22 @@ This will:
 ### 2. Access your site
 Open http://localhost or your Raspberry Pi's IP address in a browser.
 
-### 3. Configure email settings
-Edit `send-mail.php` and update:
+### 3. Set up reCAPTCHA v3
+
+1. Go to https://www.google.com/recaptcha/admin and create a new reCAPTCHA v3 key
+2. Add your domain (e.g., `photography.ddns.net`)
+3. Update these files with your keys:
+
+**In contact.html:**
+```javascript
+const RECAPTCHA_SITE_KEY = 'YOUR_SITE_KEY_HERE';
+// Also update the script src at top of page
+<script src="https://www.google.com/recaptcha/api.js?render=YOUR_SITE_KEY_HERE"></script>
+```
+
+**In send-mail.php:**
 ```php
-$to = '[your-email@example.com]'; // Your actual email address
+$secret = 'YOUR_SECRET_KEY_HERE';
 ```
 
 ## File Structure
@@ -69,7 +81,15 @@ docker compose up -d --force-recreate
 ```
 
 ## Security Notes
-- The nginx config denies access to .git and .env files
-- Update the `$to` email in send-mail.php before deploying
+
+**reCAPTCHA v3:** Protects your form from spam bots. The score threshold is set to 0.5 - adjust in `send-mail.php` if needed.
+
+- The nginx config denies access to `.git`, `.env`, and other sensitive files
+- Update reCAPTCHA keys (`YOUR_SITE_KEY`, `YOUR_SECRET_KEY`) before deploying
 - Consider adding rate limiting for production use
-- For sensitive data, consider using a form service like Formspree or Netlify Forms instead of PHP mail()
+- For email delivery, consider using a service like Formspree or Netlify Forms instead of PHP mail()
+
+**Debugging:** Check logs for reCAPTCHA issues:
+```bash
+docker exec photography-php tail -f /var/www/html/logs/form-submissions.log
+```

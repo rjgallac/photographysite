@@ -14,6 +14,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact Us - Luxury Photography</title>
     <link rel="stylesheet" href="styles.css">
+    <!-- reCAPTCHA v3 -->
+    <script src="https://www.google.com/recaptcha/api.js?render=YOUR_SITE_KEY"></script>
 </head>
 <body>
     <nav class="navbar">
@@ -121,6 +123,8 @@
             </form>
 
             <script>
+                const RECAPTCHA_SITE_KEY = 'YOUR_SITE_KEY';
+
                 document.getElementById('contactForm').addEventListener('submit', async function(e) {
                     e.preventDefault();
                     
@@ -131,10 +135,14 @@
                     const formData = new FormData(this);
                     
                     submitBtn.disabled = true;
-                    submitBtn.textContent = 'Sending...';
+                    submitBtn.textContent = 'Verifying...';
                     formMessage.style.display = 'none';
 
                     try {
+                        // Get reCAPTCHA token
+                        const token = await grecaptcha.execute(RECAPTCHA_SITE_KEY, {action: 'contact_form'});
+                        formData.append('recaptcha-response', token);
+
                         const response = await fetch('php/send-mail.php', {
                             method: 'POST',
                             body: formData
@@ -160,6 +168,11 @@
                         submitBtn.disabled = false;
                         submitBtn.textContent = 'Send Message';
                     }
+                });
+
+                // Optional: Handle reCAPTCHA load errors
+                grecaptcha.ready(function() {
+                    console.log('reCAPTCHA loaded');
                 });
             </script>
         </div>
