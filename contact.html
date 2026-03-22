@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-DEGSM8Y8KM"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-DEGSM8Y8KM');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Luxury Photography</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">Luxury Photography</div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="info.html">Services</a></li>
+            <li><a href="contact.html" class="active">Contact</a></li>
+        </ul>
+    </nav>
+
+    <section class="page-header">
+        <h1>Contact Us</h1>
+    </section>
+
+    <main class="content-section">
+        <div class="contact-container">
+            <!-- Contact Information -->
+            <div class="contact-info">
+                <h2>Get in Touch</h2>
+                <p>[Brief message like "I'd love to hear from you! Let's discuss your photography needs."]</p>
+
+                <div class="info-item">
+                    <h3>Address</h3>
+                    <p>
+                        [Your Business Name]<br>
+                        [Street Address]<br>
+                        [City, State/Province, Postal Code]<br>
+                        [Country]
+                    </p>
+                </div>
+
+                <div class="info-item">
+                    <h3>Phone</h3>
+                    <p>[Your Phone Number]</p>
+                </div>
+
+                <div class="info-item">
+                    <h3>Email</h3>
+                    <p><a href="mailto:[your-email@example.com]">[your-email@example.com]</a></p>
+                </div>
+
+                <div class="info-item">
+                    <h3>Business Hours</h3>
+                    <p>
+                        [e.g., Monday - Friday: 9:00 AM - 6:00 PM]<br>
+                        [Saturday by appointment only]<br>
+                        [Sunday closed]
+                    </p>
+                </div>
+
+                <!-- Social Media Links -->
+                <h3>Follow Me</h3>
+                <div class="social-links">
+                    <a href="#" class="btn btn-outline">Instagram</a>
+                    <a href="#" class="btn btn-outline">Facebook</a>
+                    <a href="#" class="btn btn-outline">Pinterest</a>
+                </div>
+            </div>
+
+            <!-- Contact Form -->
+            <form class="contact-form" action="#" method="POST">
+                <h2>Send Me a Message</h2>
+                
+                <div class="form-group">
+                    <label for="name">Name *</label>
+                    <input type="text" id="name" name="name" required placeholder="Your full name">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email *</label>
+                    <input type="email" id="email" name="email" required placeholder="your@email.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone</label>
+                    <input type="tel" id="phone" name="phone" placeholder="Your phone number">
+                </div>
+
+                <div class="form-group">
+                    <label for="service">Service Interested In</label>
+                    <select id="service" name="service">
+                        <option value="">Select a service...</option>
+                        <option value="family">Family Sessions</option>
+                        <option value="wedding">Weddings</option>
+                        <option value="christening">Christenings/Baptisms</option>
+                        <option value="other">Other/General Inquiry</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="date">Event Date (if applicable)</label>
+                    <input type="date" id="date" name="event-date">
+                </div>
+
+                <div class="form-group">
+                    <label for="message">Message *</label>
+                    <textarea id="message" name="message" rows="6" required placeholder="Tell me about your photography needs..."></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-gold btn-full">Send Message</button>
+            </form>
+        </div>
+
+        <!-- Optional: Add Google Maps embed here -->
+        <!--
+        <div class="map-container">
+            <iframe src="[Google Maps Embed URL]" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+        </div>
+        -->
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Luxury Photography. All rights reserved.</p>
+    </footer>
+</body>
+</html>
