@@ -1,9 +1,7 @@
 <?php
-// Handle form submission
 header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Sanitize and validate input
     $name = isset($_POST['name']) ? trim($_POST['name']) : '';
     $email = isset($_POST['email']) ? trim($_POST['email']) : '';
     $phone = isset($_POST['phone']) ? trim($_POST['phone']) : '';
@@ -11,7 +9,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $event_date = isset($_POST['event-date']) ? trim($_POST['event-date']) : '';
     $message = isset($_POST['message']) ? trim($_POST['message']) : '';
 
-    // Validation
     if (empty($name) || empty($email) || empty($message)) {
         echo json_encode(['success' => false, 'error' => 'Please fill in all required fields.']);
         exit;
@@ -22,33 +19,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // TODO: Configure your email settings below
-    $to = '[your-email@example.com]'; // Your email address
+    $to = '[your-email@example.com]'; // Update this with your email
     $subject = 'New Contact Form Submission - ' . $name;
     
-    $email_body = "You have received a new contact form submission:\n\n";
-    $email_body .= "Name: $name\n";
-    $email_body .= "Email: $email\n";
-    if (!empty($phone)) {
-        $email_body .= "Phone: $phone\n";
-    }
-    if (!empty($service)) {
-        $email_body .= "Service Interested In: $service\n";
-    }
-    if (!empty($event_date)) {
-        $email_body .= "Event Date: $event_date\n";
-    }
-    $email_body .= "\nMessage:\n$message\n";
+    $email_body = "Name: $name\nEmail: $email";
+    if (!empty($phone)) $email_body .= "\nPhone: $phone";
+    if (!empty($service)) $email_body .= "\nService: $service";
+    if (!empty($event_date)) $email_body .= "\nEvent Date: $event_date";
+    $email_body .= "\n\nMessage:\n$message\n";
 
-    // TODO: Set up proper headers for your server
-    $headers = "From: $name <$email>\r\nReply-To: $email\r\nX-Mailer: PHP/" . phpversion();
+    // Log to file for now (since mail() isn't available)
+    $log_file = '/var/www/html/logs/form-submissions.log';
+    
+    if (!is_dir(dirname($log_file))) {
+        mkdir(dirname($log_file), 0755, true);
+    }
 
-    if (mail($to, $subject, $email_body, $headers)) {
-        echo json_encode(['success' => true, 'message' => 'Thank you! Your message has been sent.']);
+    $log_entry = date('Y-m-d H:i:s') . " - Subject: $subject\n$email_body\n" . str_repeat("-", 50) . "\n";
+    
+    if (file_put_contents($log_file, $log_entry, FILE_APPEND)) {
+        echo json_encode(['success' => true, 'message' => 'Thank you! Your message has been received.']);
     } else {
-        // Log error for debugging
-        error_log("Email sending failed: $subject");
-        echo json_encode(['success' => false, 'error' => 'Failed to send message. Please try again later.']);
+        echo json_encode(['success' => false, 'error' => 'Failed to process your request.']);
     }
 
 } else {
