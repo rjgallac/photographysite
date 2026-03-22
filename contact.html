@@ -138,6 +138,12 @@
                     submitBtn.textContent = 'Verifying...';
                     formMessage.style.display = 'none';
 
+                    // Track form submission attempt
+                    gtag('event', 'contact_form_start', {
+                        event_category: 'Contact',
+                        event_label: 'form_submission_started'
+                    });
+
                     try {
                         // Get reCAPTCHA token
                         const token = await grecaptcha.execute(RECAPTCHA_SITE_KEY, {action: 'contact_form'});
@@ -155,15 +161,33 @@
                             formMessage.style.color = '#28a745';
                             formMessage.style.display = 'block';
                             this.reset();
+
+                            // Track successful submission
+                            gtag('event', 'contact_form_success', {
+                                event_category: 'Contact',
+                                event_label: 'form_submission_successful'
+                            });
                         } else {
                             formMessage.textContent = result.error || 'An error occurred. Please try again.';
                             formMessage.style.color = '#dc3545';
                             formMessage.style.display = 'block';
+
+                            // Track failed validation
+                            gtag('event', 'contact_form_failure', {
+                                event_category: 'Contact',
+                                event_label: result.error || 'form_validation_failed'
+                            });
                         }
                     } catch (error) {
                         formMessage.textContent = 'Network error. Please check your connection and try again.';
                         formMessage.style.color = '#dc3545';
                         formMessage.style.display = 'block';
+
+                        // Track network error
+                        gtag('event', 'contact_form_failure', {
+                            event_category: 'Contact',
+                            event_label: 'network_error'
+                        });
                     } finally {
                         submitBtn.disabled = false;
                         submitBtn.textContent = 'Send Message';
