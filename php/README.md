@@ -45,17 +45,27 @@ photographysite/
 
 ### Check container logs:
 ```bash
-docker compose -f php/docker-compose.yml logs -f
+docker compose logs -f
 ```
 
 ### Restart containers:
 ```bash
-docker compose -f php/docker-compose.yml restart
+docker compose up -d --force-recreate
 ```
 
-### Recreate containers:
+### View form submission logs inside container:
 ```bash
-docker compose -f php/docker-compose.yml up -d --build
+docker exec photography-php cat /var/www/html/logs/form-submissions.log
+```
+
+### Check if PHP script is working:
+```bash
+curl https://photography.ddns.net/php/send-mail.php
+```
+
+### Update containers after file changes:
+```bash
+docker compose up -d --force-recreate
 ```
 
 ## Security Notes

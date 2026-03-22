@@ -1,7 +1,16 @@
 <?php
+// Enable error logging for debugging
+error_reporting(E_ALL);
+ini_set('display_errors', 0);
+
 header('Content-Type: application/json');
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+try {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        echo json_encode(['success' => false, 'error' => 'Invalid request method.']);
+        exit;
+    }
+
     $name = isset($_POST['name']) ? trim($_POST['name']) : '';
     $email = isset($_POST['email']) ? trim($_POST['email']) : '';
     $phone = isset($_POST['phone']) ? trim($_POST['phone']) : '';
@@ -19,31 +28,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    $to = '[your-email@example.com]'; // Update this with your email
-    $subject = 'New Contact Form Submission - ' . $name;
+    $log_file = '/var/www/html/logs/form-submissions.log';
     
+    $log_dir = dirname($log_file);
+    if (!is_dir($log_dir)) {
+        mkdir($log_dir, 0755, true);
+    }
+
     $email_body = "Name: $name\nEmail: $email";
     if (!empty($phone)) $email_body .= "\nPhone: $phone";
     if (!empty($service)) $email_body .= "\nService: $service";
     if (!empty($event_date)) $email_body .= "\nEvent Date: $event_date";
     $email_body .= "\n\nMessage:\n$message\n";
 
-    // Log to file for now (since mail() isn't available)
-    $log_file = '/var/www/html/logs/form-submissions.log';
+    $log_entry = date('Y-m-d H:i:s') . " - Subject: Contact Form Submission\n$email_body" . str_repeat("-", 50) . "\n";
     
-    if (!is_dir(dirname($log_file))) {
-        mkdir(dirname($log_file), 0755, true);
-    }
-
-    $log_entry = date('Y-m-d H:i:s') . " - Subject: $subject\n$email_body\n" . str_repeat("-", 50) . "\n";
-    
-    if (file_put_contents($log_file, $log_entry, FILE_APPEND)) {
+    if (file_put_contents($log_file, $log_entry, FILE_APPEND | LOCK_EX)) {
         echo json_encode(['success' => true, 'message' => 'Thank you! Your message has been received.']);
     } else {
-        echo json_encode(['success' => false, 'error' => 'Failed to process your request.']);
+        error_log("Failed to write log file: $log_file");
+        echo json_encode(['success' => false, 'error' => 'Failed to process your request. Please try again later.']);
     }
 
-} else {
-    echo json_encode(['success' => false, 'error' => 'Invalid request method.']);
+} catch (Exception $e) {
+    error_log("Form submission error: " . $e->getMessage());
+    echo json_encode(['success' => false, 'error' => 'An unexpected error occurred.']);
 }
 ?>

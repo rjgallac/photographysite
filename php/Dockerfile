@@ -14,6 +14,9 @@ WORKDIR /var/www/html
 # Copy existing application source code
 COPY . /var/www/html
 
+# Create logs directory with proper permissions
+RUN mkdir -p /var/www/html/logs && chown -R www-data:www-data /var/www/html/logs
+
 # Set appropriate permissions
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html
