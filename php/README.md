@@ -21,21 +21,24 @@ Open http://localhost or your Raspberry Pi's IP address in a browser.
 
 ### 3. Set up reCAPTCHA v3
 
-1. Go to https://www.google.com/recaptcha/admin and create a new reCAPTCHA v3 key
-2. Add your domain (e.g., `photography.ddns.net`)
-3. Update these files with your keys:
+1. Go to https://www.google.com/recaptcha/admin and create a new reCAPTCHA v3 key for your domain (e.g., `photography.ddns.net`)
+2. Copy `.env.example` to `.env` on your server:
+   ```bash
+   cp .env.example .env
+   ```
+3. Edit `.env` with your actual keys:
+   ```bash
+   nano .env
+   ```
+4. Update `contact.html` with your Site Key:
+   - Replace `YOUR_SITE_KEY` in the script src tag
+   - Replace `YOUR_SITE_KEY` in the JavaScript constant
+5. Set permissions on `.env`:
+   ```bash
+   chmod 600 .env
+   ```
 
-**In contact.html:**
-```javascript
-const RECAPTCHA_SITE_KEY = 'YOUR_SITE_KEY_HERE';
-// Also update the script src at top of page
-<script src="https://www.google.com/recaptcha/api.js?render=YOUR_SITE_KEY_HERE"></script>
-```
-
-**In send-mail.php:**
-```php
-$secret = 'YOUR_SECRET_KEY_HERE';
-```
+**Important:** The `.env` file is gitignored and should NEVER be committed to version control!
 
 ## File Structure
 ```
@@ -84,12 +87,17 @@ docker compose up -d --force-recreate
 
 **reCAPTCHA v3:** Protects your form from spam bots. The score threshold is set to 0.5 - adjust in `send-mail.php` if needed.
 
-- The nginx config denies access to `.git`, `.env`, and other sensitive files
-- Update reCAPTCHA keys (`YOUR_SITE_KEY`, `YOUR_SECRET_KEY`) before deploying
+- Site keys are public and safe to commit
+- Secret keys must be stored in `.env` file (gitignored)
+- Never commit `.env` files or secret keys to version control
+- Update reCAPTCHA keys before deploying by editing `.env` on the server
 - Consider adding rate limiting for production use
-- For email delivery, consider using a service like Formspree or Netlify Forms instead of PHP mail()
+- For email delivery, consider using a service like Formspree or Netlify Forms
 
 **Debugging:** Check logs for reCAPTCHA issues:
 ```bash
 docker exec photography-php tail -f /var/www/html/logs/form-submissions.log
 ```
+
+**Troubleshooting reCAPTCHA errors:**
+If you see "Server configuration error", check that `RECAPTCHA_SECRET_KEY` is set in your `.env` file.

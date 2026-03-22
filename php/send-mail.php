@@ -11,8 +11,14 @@ try {
         exit;
     }
 
-    // reCAPTCHA verification
-    $secret = 'YOUR_SECRET_KEY';
+    // reCAPTCHA verification - use environment variable for secret key
+    $secret = getenv('RECAPTCHA_SECRET_KEY');
+    
+    if (empty($secret)) {
+        error_log("RECAPTCHA_SECRET_KEY not set in environment");
+        echo json_encode(['success' => false, 'error' => 'Server configuration error. Please try again later.']);
+        exit;
+    }
     $recaptchaResponse = isset($_POST['recaptcha-response']) ? $_POST['recaptcha-response'] : '';
     
     if (empty($recaptchaResponse)) {

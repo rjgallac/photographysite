@@ -1,10 +1,10 @@
-# PHP dependencies (if any)
-vendor/
-
-# Logs
-logs/*.log
-logs/*
-
-# Environment files
+# Environment variables (never commit these!)
 .env
 .env.local
+.env.production
+
+# Logs
+logs/
+
+# Vendor directory
+vendor/
