@@ -77,7 +77,7 @@
             </div>
 
             <!-- Contact Form -->
-            <form class="contact-form" action="#" method="POST">
+            <form id="contactForm" class="contact-form">
                 <h2>Send Me a Message</h2>
                 
                 <div class="form-group">
@@ -116,8 +116,52 @@
                     <textarea id="message" name="message" rows="6" required placeholder="Tell me about your photography needs..."></textarea>
                 </div>
 
-                <button type="submit" class="btn btn-gold btn-full">Send Message</button>
+                <button type="submit" class="btn btn-gold btn-full" id="submitBtn">Send Message</button>
+                <p id="formMessage" style="margin-top: 1rem; display: none;"></p>
             </form>
+
+            <script>
+                document.getElementById('contactForm').addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    const submitBtn = document.getElementById('submitBtn');
+                    const formMessage = document.getElementById('formMessage');
+                    
+                    // Collect form data
+                    const formData = new FormData(this);
+                    
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = 'Sending...';
+                    formMessage.style.display = 'none';
+
+                    try {
+                        const response = await fetch('php/send-mail.php', {
+                            method: 'POST',
+                            body: formData
+                        });
+
+                        const result = await response.json();
+
+                        if (result.success) {
+                            formMessage.textContent = result.message;
+                            formMessage.style.color = '#28a745';
+                            formMessage.style.display = 'block';
+                            this.reset();
+                        } else {
+                            formMessage.textContent = result.error || 'An error occurred. Please try again.';
+                            formMessage.style.color = '#dc3545';
+                            formMessage.style.display = 'block';
+                        }
+                    } catch (error) {
+                        formMessage.textContent = 'Network error. Please check your connection and try again.';
+                        formMessage.style.color = '#dc3545';
+                        formMessage.style.display = 'block';
+                    } finally {
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = 'Send Message';
+                    }
+                });
+            </script>
         </div>
 
         <!-- Optional: Add Google Maps embed here -->

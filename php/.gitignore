@@ -1,0 +1,10 @@
+# PHP dependencies (if any)
+vendor/
+
+# Logs
+logs/*.log
+logs/*
+
+# Environment files
+.env
+.env.local
