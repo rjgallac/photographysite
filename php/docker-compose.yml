@@ -8,7 +8,7 @@ services:
       - .env
     volumes:
       - ..:/var/www/html
-      - ./logs:/var/www/html/logs
+      - /var/log/apps/photography:/var/www/html/logs
     networks:
       - photography-network
 
