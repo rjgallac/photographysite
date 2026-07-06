@@ -13,14 +13,14 @@ try {
 
     // reCAPTCHA verification - read from environment variable
     $secret = getenv('RECAPTCHA_SECRET_KEY');
-    
+
     if (empty($secret)) {
         error_log("RECAPTCHA_SECRET_KEY not configured");
         echo json_encode(['success' => false, 'error' => 'Server configuration error. Please try again later.']);
         exit;
     }
     $recaptchaResponse = isset($_POST['recaptcha-response']) ? $_POST['recaptcha-response'] : '';
-    
+
     if (empty($recaptchaResponse)) {
         echo json_encode(['success' => false, 'error' => 'Security verification failed. Please try again.']);
         exit;
@@ -61,8 +61,20 @@ try {
         exit;
     }
 
+    // Prepare the data array
+    $log_data = [
+        'timestamp'   => date('Y-m-d H:i:s'),
+        'subject'     => 'Contact Form Submission',
+        'name'        => $name,
+        'email'       => $email,
+        'phone'       => $phone,
+        'service'     => $service,
+        'event_date'  => $event_date,
+        'message'     => $message
+    ];
+
     $log_file = '/var/www/html/logs/form-submissions.log';
-    
+
     $log_dir = dirname($log_file);
     if (!is_dir($log_dir)) {
         mkdir($log_dir, 0755, true);
@@ -74,10 +86,13 @@ try {
     if (!empty($event_date)) $email_body .= "\nEvent Date: $event_date";
     $email_body .= "\n\nMessage:\n$message\n";
 
-    $log_entry = date('Y-m-d H:i:s') . " - Subject: Contact Form Submission\n$email_body" . str_repeat("-", 50) . "\n";
-    
+    // Convert the array to a single-line JSON string
+    // JSON_UNESCAPED_SLASHES and JSON_UNESCAPED_UNICODE make it more readable
+    $log_entry = json_encode($log_data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "\n";
+
+
     if (file_put_contents($log_file, $log_entry, FILE_APPEND | LOCK_EX)) {
-        echo json_encode(['success' => true, 'message' => 'Thank you! Your message has been received.']);
+        echo json_encode(['success' => true, 'message' => 'Thank you!']);
     } else {
         error_log("Failed to write log file: $log_file");
         echo json_encode(['success' => false, 'error' => 'Failed to process your request. Please try again later.']);
