@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   php-fpm:
@@ -8,7 +8,7 @@ services:
       - .env
     volumes:
       - ..:/var/www/html
-      - logs:/var/www/html/logs
+      - ./logs:/var/www/html/logs
     networks:
       - photography-network
 
@@ -25,8 +25,8 @@ services:
     networks:
       - photography-network
 
-volumes:
-  logs:
+# volumes:
+#   logs:
 
 networks:
   photography-network:
